@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCartItemsTable extends Migration
+class CreateOrdersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateCartItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('cart_items', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('quantity')->default(1);
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->foreignId('order_id')->nullable()->constrained('orders'); // Add 'order_id' as a foreign key.
+            $table->unsignedBigInteger('customer_id');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->decimal('total_amount', 10, 2);
+            $table->timestamp('order_date')->useCurrent();
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateCartItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cart_items');
+        Schema::dropIfExists('orders');
     }
 }
